@@ -12,5 +12,5 @@
     "skipLibCheck": true,
     "types": ["vite/client"]
   },
-  "include": ["src/renderer/**/*", "src/shared/**/*"]
+  "include": ["src/renderer/**/*", "src/shared/**/*", "packages/ui/src/**/*"]
 }

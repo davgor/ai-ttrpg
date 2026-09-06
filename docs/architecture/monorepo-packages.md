@@ -34,7 +34,7 @@ ai-ttrpg/
   ...
 ```
 
-**Three core packages** are `orchestrator`, `dm`, and `npc`. The Electron app is a **host**, not a fourth logic home: it wires providers, settings, IPC, and UI; it does not reimplement tools or agent policy.
+**Three core packages** are `orchestrator`, `dm`, and `npc`. The presentational **`@ai-ttrpg/ui`** package holds React chat chrome; it must not import domain packages. The Electron app is a **host**, not a logic home: it wires providers, settings, IPC, and mounts UI; it does not reimplement tools or agent policy.
 
 Optional later (not core): `packages/shared-types` only if cross-cutting DTO duplication becomes painful. Prefer exporting contracts from `orchestrator`’s public API so the backend remains the source of truth.
 
@@ -102,6 +102,7 @@ Must stay light: same bans as DM. One NPC turn = assemble context → model → 
 ```text
 apps/desktop
     │
+    ├──► @ai-ttrpg/ui   (presentational React; no domain imports)
     ├──► @ai-ttrpg/dm  ──────┐
     ├──► @ai-ttrpg/npc ──────┼──► @ai-ttrpg/orchestrator  (public API only)
     └──► @ai-ttrpg/orchestrator
@@ -111,10 +112,12 @@ apps/desktop
 |-----------|----------|
 | `dm` → `orchestrator` | Yes — public API only |
 | `npc` → `orchestrator` | Yes — public API only |
+| `ui` → `orchestrator` / `dm` / `npc` | **No** |
+| `dm` / `npc` / `orchestrator` → `ui` | **No** |
 | `dm` → `npc` | **No** |
 | `npc` → `dm` | **No** |
 | `orchestrator` → `dm` or `npc` | **No** |
-| `desktop` → all three | Yes — composition root |
+| `desktop` → all four | Yes — composition root |
 | Anyone → `orchestrator/src/internal` | **No** |
 
 DM and NPC never import each other. The host sequences “DM turn then NPC turns.” That keeps agent packages replaceable and stops cross-contamination of prompts/tools.
@@ -139,7 +142,9 @@ Rules include:
 - `orchestrator` may not import `dm` / `npc` or React
 - Agents may not deep-import orchestrator `src/` (only the package entry → `src/index.ts`) or `src/internal/`
 - Agents may not import `fs` / `path` / SQLite drivers / `electron`
-- Renderer may not import domain packages
+- Renderer may not import domain packages (`orchestrator` / `dm` / `npc`); it may import `@ai-ttrpg/ui`
+- `@ai-ttrpg/ui` may not import domain packages
+- Domain packages may not import `@ai-ttrpg/ui`
 - No circular dependencies
 
 Unit tests: `scripts/package-barriers/check.test.mjs` (clean graph + intentional violations).
@@ -188,7 +193,7 @@ If a DM/NPC test needs complex world setup, that logic is probably in the wrong 
 |---------|--------|
 | **Main / utility** | `@ai-ttrpg/orchestrator`, agent runners from `dm`/`npc`, provider keys, campaign paths |
 | **Preload** | Typed IPC bridge only—no domain packages |
-| **Renderer** | React UI; talks IPC; **does not** import orchestrator or run agents |
+| **Renderer** | React via `@ai-ttrpg/ui`; talks IPC; **does not** import orchestrator or run agents |
 
 Agents may live in main to keep API keys and DB off the renderer. The thinness rule still applies: DM/NPC packages remain prompt+loop, orchestrator remains backend.
 
@@ -217,6 +222,7 @@ Agents may live in main to keep API keys and DB off the renderer. The thinness r
 - [x] npm workspaces root; `packages/*` (apps later)
 - [x] Three packages with locked `exports`
 - [x] dependency-cruiser rules + `npm run boundaries` + CI job
+- [x] `@ai-ttrpg/ui` presentational package + barriers (no domain imports)
 - [ ] `NpcFacade` / `DmFacade` types; NPC entrypoints refuse full handle
 - [ ] Per-package vitest suites as logic lands
 - [ ] Move any game rule found in `dm`/`npc` during review into `orchestrator` as a **Blocking** red-team item
@@ -227,4 +233,4 @@ Agents may live in main to keep API keys and DB off the renderer. The thinness r
 
 - Exact folder names inside each package
 - Provider plugin package splits (Anthropic / Player2 / local can start as host adapters)
-- UI monorepo package (renderer stays under `apps/desktop` unless UI docs say otherwise)
+- Moving Electron into `apps/desktop` (host stays under `src/` until that cutover)

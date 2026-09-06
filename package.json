@@ -18,7 +18,7 @@
     "package": "npm run package:win",
     "package:win": "electron-vite build && electron-builder --win --publish never",
     "package:mac": "electron-vite build && electron-builder --mac --publish never",
-    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p fireguard/tsconfig.json && tsc --noEmit -p packages/orchestrator/tsconfig.json && tsc --noEmit -p packages/dm/tsconfig.json && tsc --noEmit -p packages/npc/tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p fireguard/tsconfig.json && tsc --noEmit -p packages/orchestrator/tsconfig.json && tsc --noEmit -p packages/dm/tsconfig.json && tsc --noEmit -p packages/npc/tsconfig.json && tsc --noEmit -p packages/ui/tsconfig.json",
     "lint": "oxlint src scripts packages",
     "boundaries": "node scripts/package-barriers/check.mjs",
     "board:unique": "node scripts/board-uniqueness/check.mjs",

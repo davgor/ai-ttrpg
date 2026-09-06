@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'node:path'
 import { resolveBrowserWindowIconPath } from './appIcon'
 import { initAutoUpdate, registerAutoUpdateHandlers } from './autoUpdate'
+import { registerChatHandlers } from './chatSession'
 import { setupGlobalErrorLogging } from './logger'
 import {
   loadRendererContent,
@@ -47,6 +48,7 @@ function registerAppVersionHandler(): void {
 app.whenReady().then(() => {
   registerAppVersionHandler()
   registerAutoUpdateHandlers()
+  registerChatHandlers()
   initAutoUpdate()
   createMainWindow()
 
