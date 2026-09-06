@@ -1,0 +1,13 @@
+# Baseline ignore for ts-prune (one pattern per line)
+# Generated from tsconfig.node.json + tsconfig.web.json
+# Refresh after export moves/deletes: npm run deadcode:refresh
+
+electron.vite.config.ts:37 - default
+src/preload/index.ts:24 - AutoUpdateApi
+src/preload/index.ts:25 - AppInfoApi
+src/shared/autoUpdate/types.ts:1 - AutoUpdatePhase
+src/shared/autoUpdate/types.ts:17 - AUTO_UPDATE_EVENT_CHANNEL
+src/shared/appIconPaths.ts:2 - APP_ICON_BUILD_ICO
+src/shared/appIconPaths.ts:5 - APP_ICON_BUILD_PNG
+src/shared/appIconPaths.ts:8 - APP_ICON_RESOURCE_NAME
+src/shared/appIconPaths.ts:11 - APP_BRAND_MARK_ASSET
