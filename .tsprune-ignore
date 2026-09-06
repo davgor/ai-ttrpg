@@ -1,13 +1,45 @@
 # Baseline ignore for ts-prune (one pattern per line)
 # Generated from tsconfig.node.json + tsconfig.web.json
 # Refresh after export moves/deletes: npm run deadcode:refresh
+# Refreshed 2026-09-06 (40 entries)
 
-electron.vite.config.ts:37 - default
-src/preload/index.ts:24 - AutoUpdateApi
-src/preload/index.ts:25 - AppInfoApi
-src/shared/autoUpdate/types.ts:1 - AutoUpdatePhase
-src/shared/autoUpdate/types.ts:17 - AUTO_UPDATE_EVENT_CHANNEL
+electron.vite.config.ts:38 - default
+packages/orchestrator/src/index.ts:12 - ChatItem
+packages/orchestrator/src/index.ts:13 - ChatRole
+packages/orchestrator/src/index.ts:14 - DialogueMessage
+packages/orchestrator/src/index.ts:15 - MessageAlignment
+packages/orchestrator/src/index.ts:16 - SystemEvent
+packages/orchestrator/src/index.ts:18 - appendPlayerMessage
+packages/orchestrator/src/index.ts:18 - createPlayerMessage
+packages/orchestrator/src/index.ts:18 - nextMessageId
+packages/orchestrator/src/index.ts:19 - createDemoThread
+packages/orchestrator/src/index.ts:3 - OrchestratorHandle
+packages/orchestrator/src/index.ts:7 - createOrchestrator
+packages/orchestrator/src/internal/marker.ts:2 - ORCHESTRATOR_INTERNAL
+packages/ui/src/index.ts:1 - ChatWindow
+packages/ui/src/index.ts:10 - ChatItem
+packages/ui/src/index.ts:11 - ChatRole
+packages/ui/src/index.ts:12 - DialogueMessage
+packages/ui/src/index.ts:13 - MessageAlignment
+packages/ui/src/index.ts:14 - SystemEvent
+packages/ui/src/index.ts:2 - ChatWindowProps
+packages/ui/src/index.ts:3 - MessageList
+packages/ui/src/index.ts:4 - Composer
+packages/ui/src/index.ts:5 - formatMessageParts
+packages/ui/src/index.ts:6 - canSubmitComposer
+packages/ui/src/index.ts:6 - normalizeComposerDraft
+packages/ui/src/index.ts:7 - alignmentClassForRole
+packages/ui/src/index.ts:8 - MessagePart
+src/preload/index.ts:39 - AutoUpdateApi
+src/preload/index.ts:40 - AppInfoApi
+src/preload/index.ts:41 - ChatApi
+src/shared/appIconPaths.ts:11 - APP_BRAND_MARK_ASSET
 src/shared/appIconPaths.ts:2 - APP_ICON_BUILD_ICO
 src/shared/appIconPaths.ts:5 - APP_ICON_BUILD_PNG
 src/shared/appIconPaths.ts:8 - APP_ICON_RESOURCE_NAME
-src/shared/appIconPaths.ts:11 - APP_BRAND_MARK_ASSET
+src/shared/autoUpdate/types.ts:17 - AUTO_UPDATE_EVENT_CHANNEL
+src/shared/chat/types.ts:16 - SystemEvent
+src/shared/chat/types.ts:22 - ChatItem
+src/shared/chat/types.ts:3 - ChatRole
+src/shared/chat/types.ts:5 - MessageAlignment
+src/shared/chat/types.ts:7 - DialogueMessage

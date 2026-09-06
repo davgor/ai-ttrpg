@@ -6,7 +6,13 @@ export default defineConfig({
     'import.meta.env.PROD': JSON.stringify(false)
   },
   test: {
-    include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'scripts/**/*.test.mjs'],
+    include: [
+      'src/**/*.test.ts',
+      'src/**/*.test.tsx',
+      'packages/**/*.test.ts',
+      'packages/**/*.test.tsx',
+      'scripts/**/*.test.mjs'
+    ],
     environment: 'node',
     testTimeout: 15_000
   }

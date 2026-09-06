@@ -8,7 +8,7 @@
     "agenticFlakinessRuns": 100,
     "maxFlakeRate": 0
   },
-  "include": ["src/**/*.{test,spec}.{ts,tsx}"],
+  "include": ["src/**/*.{test,spec}.{ts,tsx}", "packages/**/*.{test,spec}.{ts,tsx}"],
   "exclude": ["**/__mocks__/**", "**/node_modules/**", "e2e/**", "fireguard/**", "scripts/**"],
   "baseRef": "main",
   "testCommand": "npx vitest run"

@@ -32,6 +32,9 @@ describe('package barrier rules', () => {
         'agents-not-to-sqlite',
         'agents-not-to-electron',
         'orchestrator-not-to-react',
+        'orchestrator-not-to-ui',
+        'ui-not-to-domain-packages',
+        'agents-not-to-ui',
         'renderer-not-to-domain-packages',
         'no-circular'
       ])

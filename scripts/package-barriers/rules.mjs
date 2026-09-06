@@ -86,8 +86,29 @@ export const forbidden = [
     to: { path: '^(react|react-dom)(/|$)' }
   },
   {
+    name: 'orchestrator-not-to-ui',
+    comment: 'Orchestrator must not depend on the UI package.',
+    severity: 'error',
+    from: { path: '(^|/)packages/orchestrator/' },
+    to: { path: '(^|/)packages/ui/' }
+  },
+  {
+    name: 'ui-not-to-domain-packages',
+    comment: 'UI is presentational - no orchestrator/dm/npc imports.',
+    severity: 'error',
+    from: { path: '(^|/)packages/ui/' },
+    to: { path: '(^|/)packages/(orchestrator|dm|npc)/' }
+  },
+  {
+    name: 'agents-not-to-ui',
+    comment: 'DM/NPC agents must not import UI.',
+    severity: 'error',
+    from: { path: '(^|/)packages/(dm|npc)/' },
+    to: { path: '(^|/)packages/ui/' }
+  },
+  {
     name: 'renderer-not-to-domain-packages',
-    comment: 'Renderer talks IPC only - no orchestrator/dm/npc imports.',
+    comment: 'Renderer talks IPC only - no orchestrator/dm/npc imports (UI package is allowed).',
     severity: 'error',
     from: { path: '(^|/)src/renderer/' },
     to: { path: '(^|/)packages/(orchestrator|dm|npc)/' }

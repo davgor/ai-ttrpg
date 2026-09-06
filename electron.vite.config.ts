@@ -1,5 +1,6 @@
 import { defineConfig } from 'electron-vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
 import type { Plugin } from 'vite'
 
 const DEV_SERVER_ORIGIN = 'http://localhost:5173'
@@ -55,6 +56,12 @@ export default defineConfig(({ command }) => {
     },
     renderer: {
       root: 'src/renderer',
+      resolve: {
+        alias: {
+          '@ai-ttrpg/ui': resolve('packages/ui/src'),
+          '@ai-ttrpg/ui/styles.css': resolve('packages/ui/src/styles.css')
+        }
+      },
       build: {
         outDir: 'out/renderer',
         rollupOptions: {

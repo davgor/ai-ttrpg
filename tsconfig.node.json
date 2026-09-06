@@ -14,7 +14,8 @@
     "electron.vite.config.ts",
     "src/main/**/*",
     "src/preload/**/*",
-    "src/shared/**/*"
+    "src/shared/**/*",
+    "packages/orchestrator/src/**/*"
   ],
-  "exclude": ["src/renderer"]
+  "exclude": ["src/renderer", "packages/orchestrator/src/**/*.test.ts"]
 }

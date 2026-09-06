@@ -7,3 +7,13 @@ export type OrchestratorHandle = {
 export function createOrchestrator(): OrchestratorHandle {
   return { kind: 'orchestrator' }
 }
+
+export type {
+  ChatItem,
+  ChatRole,
+  DialogueMessage,
+  MessageAlignment,
+  SystemEvent
+} from './chat/types'
+export { appendPlayerMessage, createPlayerMessage, nextMessageId } from './chat/chatThread'
+export { createDemoThread } from './chat/demoThread'

@@ -18,8 +18,13 @@ function isProductionModule(path: string, config: FireguardConfig): boolean {
   if (path.includes('fireguard/')) return false;
   // Test helpers (render wrappers, setup) are not production modules.
   if (path.startsWith('src/test/')) return false;
-  // Prefer src/ modules; still allow other app roots when included by convention
-  return path.startsWith('src/') || path.startsWith('lib/') || path.startsWith('app/');
+  // Prefer src/ / packages/ modules; still allow other app roots when included by convention
+  return (
+    path.startsWith('src/') ||
+    path.startsWith('packages/') ||
+    path.startsWith('lib/') ||
+    path.startsWith('app/')
+  );
 }
 
 export function resolveGitScope(options: {
