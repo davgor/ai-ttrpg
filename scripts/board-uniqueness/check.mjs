@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Fail when /board has duplicate epic (NNN) or sub-ticket (NNN.M) ids.
  */

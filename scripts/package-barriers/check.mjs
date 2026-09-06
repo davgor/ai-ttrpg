@@ -1,12 +1,11 @@
-#!/usr/bin/env node
 /**
  * Enforce monorepo package barriers (docs/architecture/monorepo-packages.md).
  * Usage: node scripts/package-barriers/check.mjs [cruiseRoot...]
  */
 import { cruise } from 'dependency-cruiser'
 import { existsSync } from 'node:fs'
-import { dirname, join, relative } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { dirname, isAbsolute, join, relative, resolve } from 'node:path'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { cruiseOptions } from './rules.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
@@ -31,7 +30,7 @@ export function collectErrorViolations(result) {
  * @param {string} [cwd]
  */
 export async function runPackageBarrierCruise(cruiseRoots, cwd = ROOT) {
-  const resolved = cruiseRoots.map((p) => (p.startsWith('/') || /^[A-Za-z]:/.test(p) ? p : join(cwd, p)))
+  const resolved = cruiseRoots.map((p) => (isAbsolute(p) ? p : join(cwd, p)))
   for (const path of resolved) {
     if (!existsSync(path)) {
       throw new Error(`package-barriers: cruise root missing: ${relative(cwd, path) || path}`)
@@ -66,8 +65,8 @@ async function main() {
   process.exitCode = 1
 }
 
-const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]
-if (isDirectRun) {
+const entryHref = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : ''
+if (entryHref && import.meta.url === entryHref) {
   main().catch((err) => {
     console.error(err)
     process.exitCode = 1

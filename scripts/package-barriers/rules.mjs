@@ -36,7 +36,7 @@ export const forbidden = [
   {
     name: 'no-deep-orchestrator-src',
     comment:
-      'Agents may only use the orchestrator package entry (@ai-ttrpg/orchestrator → src/index.ts), not other src files.',
+      'Agents may only use the orchestrator package entry (@ai-ttrpg/orchestrator -> src/index.ts), not other src files.',
     severity: 'error',
     from: { path: '(^|/)packages/(dm|npc)/' },
     to: {
@@ -56,7 +56,7 @@ export const forbidden = [
   },
   {
     name: 'agents-not-to-node-builtins',
-    comment: 'DM/NPC stay thin — no Node fs/path (campaign I/O belongs in orchestrator/host).',
+    comment: 'DM/NPC stay thin - no Node fs/path (campaign I/O belongs in orchestrator/host).',
     severity: 'error',
     from: { path: '(^|/)packages/(dm|npc)/' },
     to: {
@@ -73,21 +73,21 @@ export const forbidden = [
   },
   {
     name: 'agents-not-to-electron',
-    comment: 'DM/NPC must not import Electron — host wires that.',
+    comment: 'DM/NPC must not import Electron - host wires that.',
     severity: 'error',
     from: { path: '(^|/)packages/(dm|npc)/' },
     to: { path: '^electron$' }
   },
   {
     name: 'orchestrator-not-to-react',
-    comment: 'Orchestrator is backend — no React.',
+    comment: 'Orchestrator is backend - no React.',
     severity: 'error',
     from: { path: '(^|/)packages/orchestrator/' },
     to: { path: '^(react|react-dom)(/|$)' }
   },
   {
     name: 'renderer-not-to-domain-packages',
-    comment: 'Renderer talks IPC only — no orchestrator/dm/npc imports.',
+    comment: 'Renderer talks IPC only - no orchestrator/dm/npc imports.',
     severity: 'error',
     from: { path: '(^|/)src/renderer/' },
     to: { path: '(^|/)packages/(orchestrator|dm|npc)/' }
