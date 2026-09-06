@@ -8,8 +8,16 @@ Electron desktop app (TypeScript + React) for an AI-driven single-player text-ad
 - **Strict lint.** oxlint with zero warnings. Never relax rules to make code pass — fix the code. After edits: follow [`.ai-instructions.md`](.ai-instructions.md).
 - **TypeScript strict.** No `any` escapes.
 - **Red team review (mandatory).** Before merge-ready / ticket `done`, run `red-team-review` (alias: `antagonistic-pr-review`), post on the PR, and fix every **Blocking** finding. See [`.ai-instructions.md`](.ai-instructions.md).
-- **Ticket board.** Work under `/board` (`backlog/` → `in-progress/` → `done/`). Epics `NNN-*.md`, sub-tickets `NNN.M-*.md`. Skills: `complete-ticket`, `collapse-epic`.
+- **Ticket board.** Work under `/board` (`backlog/` → `in-progress/` → `done/`). Epics `NNN-*.md`, sub-tickets `NNN.M-*.md`. Epic and sub-ticket ids must be unique across the board (`npm run board:unique`). Skills: `complete-ticket`, `collapse-epic`.
 - **No secrets committed.** `.env` stays gitignored.
+
+## Architecture
+
+- [AI topology](docs/architecture/ai-topology.md) — Orchestrator / DM / NPC tiers, providers, local RAG, tool surface
+- [Orchestrator catalog](docs/architecture/orchestrator-catalog.md) — full tool list, NPC sheet actions, pipeline DSL
+- [Monorepo packages](docs/architecture/monorepo-packages.md) — three core packages, dependency barriers, thin agents
+
+Package barriers are enforced locally and in CI via `npm run boundaries`.
 
 ## Stack
 
@@ -26,6 +34,8 @@ Electron desktop app (TypeScript + React) for an AI-driven single-player text-ad
 npm install
 npm run dev          # Electron + React dev
 npm test             # Vitest (app + fireguard)
+npm run boundaries   # Monorepo package dependency barriers
+npm run board:unique # Fail on duplicate board epic / sub-ticket ids
 npm run fireguard    # Grade new unit tests (A–F); F fails CI
 npm run lint         # oxlint (strict)
 npm run typecheck
@@ -43,6 +53,8 @@ npm run deadcode:refresh
 - `test` — `npm test`
 - `fireguard` — grades **new** Vitest unit tests vs `main`; letter **F** fails
 - `lint` — `npm run lint`
+- `boundaries` — monorepo package dependency barriers (`npm run boundaries`)
+- `board-unique` — duplicate epic / sub-ticket ids on `/board` (`npm run board:unique`)
 - `build` — `npm run typecheck` && `npm run build`
 
 Also included:
