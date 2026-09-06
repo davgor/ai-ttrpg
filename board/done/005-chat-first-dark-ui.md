@@ -14,10 +14,10 @@ Chat **domain** (thread seed, append player message, ids) lives in `@ai-ttrpg/or
 
 ## Acceptance criteria
 
-- [ ] New session opens into a dark chat thread (no world-builder / character-sheet gate)
-- [ ] Demo seed matches mock roles: DM, NPCs, player, system enter/leave
-- [ ] Player can send a message via host/orchestrator path; it appears right-aligned
-- [ ] Auto-update banner/check remains reachable without leaving the chat metaphor
-- [ ] `packages/ui` owns renderer chat chrome; orchestrator owns thread mutations
-- [ ] No third-party chat-product brand names in tickets, code comments, or PR copy
-- [ ] lint, boundaries, board:unique, unit tests, fireguard (new tests), typecheck, deadcode, build pass
+- [x] New session opens into a dark chat thread (no world-builder / character-sheet gate)
+- [x] Demo seed matches mock roles: DM, NPCs, player, system enter/leave
+- [x] Player can send a message via host/orchestrator path; it appears right-aligned
+- [x] Auto-update banner/check remains reachable without leaving the chat metaphor
+- [x] `packages/ui` owns renderer chat chrome; orchestrator owns thread mutations
+- [x] No third-party chat-product brand names in tickets, code comments, or PR copy
+- [x] lint, boundaries, board:unique, unit tests, fireguard (new tests), typecheck, deadcode, build pass
