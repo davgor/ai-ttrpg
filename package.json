@@ -2,6 +2,9 @@
   "name": "ai-ttrpg",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "description": "AI-driven single-player text-adventure TTRPG desktop app (V3)",
   "author": "davgor",
   "repository": {
@@ -15,8 +18,10 @@
     "package": "npm run package:win",
     "package:win": "electron-vite build && electron-builder --win --publish never",
     "package:mac": "electron-vite build && electron-builder --mac --publish never",
-    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p fireguard/tsconfig.json",
-    "lint": "oxlint src scripts",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p fireguard/tsconfig.json && tsc --noEmit -p packages/orchestrator/tsconfig.json && tsc --noEmit -p packages/dm/tsconfig.json && tsc --noEmit -p packages/npc/tsconfig.json",
+    "lint": "oxlint src scripts packages",
+    "boundaries": "node scripts/package-barriers/check.mjs",
+    "board:unique": "node scripts/board-uniqueness/check.mjs",
     "test": "vitest run && vitest run --config fireguard/vitest.config.ts",
     "test:fireguard": "vitest run --config fireguard/vitest.config.ts",
     "fireguard": "node fireguard/bin/fireguard.mjs",
@@ -35,6 +40,7 @@
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^5.2.0",
+    "dependency-cruiser": "^16.10.4",
     "electron": "^42.6.0",
     "electron-builder": "^26.15.3",
     "electron-vite": "^5.0.0",

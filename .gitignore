@@ -148,3 +148,4 @@ vite.config.ts.timestamp-*
 # Local import staging
 .boosterseat-import/
 .electron-ref/
+scripts/package-barriers/.fixture-runs/
