@@ -3,8 +3,11 @@ import { requestCheckForUpdates } from './checkForUpdates'
 
 describe('requestCheckForUpdates', () => {
   it('invokes the preload checkForUpdates API', async () => {
-    const checkForUpdates = vi.fn().mockResolvedValue(undefined)
+    let callCount = 0
+    const checkForUpdates = vi.fn().mockImplementation(async () => {
+      callCount += 1
+    })
     await requestCheckForUpdates(checkForUpdates)
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(callCount).toBe(1)
   })
 })

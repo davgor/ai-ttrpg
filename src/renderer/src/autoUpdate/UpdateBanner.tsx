@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { AutoUpdateState } from '../../../shared/autoUpdate/types'
+import { applyWhenActive } from './applyWhenActive'
+import {
+  formatUpdateBannerText,
+  shouldHideUpdateBanner,
+  shouldShowRestartButton
+} from './updateBannerCopy'
 
 const DEFAULT_STATE: AutoUpdateState = {
   phase: 'idle',
@@ -12,9 +18,7 @@ export function useAppUpdate(): AutoUpdateState {
   useEffect(() => {
     let active = true
     void window.autoUpdate.getState().then((initial) => {
-      if (active) {
-        setState(initial)
-      }
+      applyWhenActive(active, initial, setState)
     })
     const unsubscribe = window.autoUpdate.onEvent((event) => {
       setState(event)
@@ -30,21 +34,11 @@ export function useAppUpdate(): AutoUpdateState {
 
 export function UpdateBanner(): JSX.Element | null {
   const update = useAppUpdate()
+  const showRestart = shouldShowRestartButton(update.phase)
 
-  if (update.phase === 'idle' || update.phase === 'checking' || update.phase === 'error') {
-    return null
-  }
-
-  const showRestart = update.phase === 'downloaded'
-
-  return (
+  return shouldHideUpdateBanner(update.phase) ? null : (
     <div className="update-banner" role="status" aria-live="polite">
-      <span className="update-banner-text">
-        {update.message ??
-          (update.phase === 'downloading'
-            ? `Downloading update… ${update.downloadPercent ?? 0}%`
-            : `Update ${update.availableVersion ?? ''} available`)}
-      </span>
+      <span className="update-banner-text">{formatUpdateBannerText(update)}</span>
       {showRestart ? (
         <button
           type="button"

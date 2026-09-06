@@ -72,31 +72,41 @@ describe('initAutoUpdate scheduling', () => {
   afterEach(restoreAutoUpdateTest)
 
   it('schedules an initial check then recurring polls', async () => {
+    let checkCount = 0
+    checkForUpdates.mockImplementation(async () => {
+      checkCount += 1
+    })
+
     const { initAutoUpdate, INITIAL_CHECK_DELAY_MS, POLL_INTERVAL_MS } = await loadModule()
+    const { autoUpdater } = await import('electron-updater')
     initAutoUpdate()
 
-    expect(checkForUpdates).not.toHaveBeenCalled()
+    expect(checkCount).toBe(0)
+    expect(autoUpdater.autoDownload).toBe(true)
+    expect(autoUpdater.autoInstallOnAppQuit).toBe(true)
 
     await vi.advanceTimersByTimeAsync(INITIAL_CHECK_DELAY_MS)
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(checkCount).toBe(1)
 
     await vi.advanceTimersByTimeAsync(POLL_INTERVAL_MS)
-    expect(checkForUpdates).toHaveBeenCalledTimes(2)
+    expect(checkCount).toBe(2)
 
     await vi.advanceTimersByTimeAsync(POLL_INTERVAL_MS)
-    expect(checkForUpdates).toHaveBeenCalledTimes(3)
+    expect(checkCount).toBe(3)
   })
 })
 
-describe('checkForUpdatesNow guards', () => {
+describe('checkForUpdatesNow overlapping guards', () => {
   beforeEach(resetAutoUpdateTest)
   afterEach(restoreAutoUpdateTest)
 
   it('skips overlapping checks while a previous check is in flight', async () => {
+    let checkCount = 0
     let resolveCheck: (() => void) | undefined
     checkForUpdates.mockImplementation(
       () =>
         new Promise<void>((resolve) => {
+          checkCount += 1
           resolveCheck = resolve
         })
     )
@@ -104,36 +114,60 @@ describe('checkForUpdatesNow guards', () => {
     const { initAutoUpdate, checkForUpdatesNow, INITIAL_CHECK_DELAY_MS } = await loadModule()
     initAutoUpdate()
     await vi.advanceTimersByTimeAsync(INITIAL_CHECK_DELAY_MS)
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(checkCount).toBe(1)
 
     const overlapping = checkForUpdatesNow()
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(checkCount).toBe(1)
 
     resolveCheck?.()
     await overlapping
   })
+})
+
+describe('checkForUpdatesNow phase guards', () => {
+  beforeEach(resetAutoUpdateTest)
+  afterEach(restoreAutoUpdateTest)
 
   it('skips checks after an update is already downloaded', async () => {
+    let checkCount = 0
+    checkForUpdates.mockImplementation(async () => {
+      checkCount += 1
+    })
+
     const handlers = new Map<string, (info?: { version: string }) => void>()
     on.mockImplementation((event: string, handler: (info?: { version: string }) => void) => {
       handlers.set(event, handler)
     })
 
-    const { initAutoUpdate, checkForUpdatesNow, INITIAL_CHECK_DELAY_MS } = await loadModule()
+    const { initAutoUpdate, checkForUpdatesNow, getAutoUpdateState, INITIAL_CHECK_DELAY_MS } =
+      await loadModule()
     initAutoUpdate()
     await vi.advanceTimersByTimeAsync(INITIAL_CHECK_DELAY_MS)
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(checkCount).toBe(1)
 
     handlers.get('update-downloaded')?.({ version: '9.0.0' })
+    expect(getAutoUpdateState().phase).toBe('downloaded')
+    expect(getAutoUpdateState().availableVersion).toBe('9.0.0')
+
     await checkForUpdatesNow()
-    expect(checkForUpdates).toHaveBeenCalledTimes(1)
+    expect(checkCount).toBe(1)
   })
+})
+
+describe('checkForUpdatesNow disable guard', () => {
+  beforeEach(resetAutoUpdateTest)
+  afterEach(restoreAutoUpdateTest)
 
   it('is a no-op when auto-update is disabled', async () => {
     process.env['DISABLE_AUTO_UPDATE'] = '1'
-    const { checkForUpdatesNow } = await loadModule()
+    let checkCount = 0
+    checkForUpdates.mockImplementation(async () => {
+      checkCount += 1
+    })
+    const { checkForUpdatesNow, isAutoUpdateEnabled } = await loadModule()
+    expect(isAutoUpdateEnabled()).toBe(false)
     await checkForUpdatesNow()
-    expect(checkForUpdates).not.toHaveBeenCalled()
+    expect(checkCount).toBe(0)
   })
 })
 
@@ -142,9 +176,17 @@ describe('silent apply helpers', () => {
   afterEach(restoreAutoUpdateTest)
 
   it('quitAndInstallUpdate uses silent install with force-run-after', async () => {
+    let silent: boolean | undefined
+    let forceRunAfter: boolean | undefined
+    quitAndInstall.mockImplementation((a: boolean, b: boolean) => {
+      silent = a
+      forceRunAfter = b
+    })
+
     const { quitAndInstallUpdate } = await loadModule()
     quitAndInstallUpdate()
-    expect(quitAndInstall).toHaveBeenCalledWith(true, true)
+    expect(silent).toBe(true)
+    expect(forceRunAfter).toBe(true)
   })
 
   it('formats ready-state copy for silent restart apply', async () => {

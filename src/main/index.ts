@@ -3,6 +3,11 @@ import { join } from 'node:path'
 import { resolveBrowserWindowIconPath } from './appIcon'
 import { initAutoUpdate, registerAutoUpdateHandlers } from './autoUpdate'
 import { setupGlobalErrorLogging } from './logger'
+import {
+  loadRendererContent,
+  quitIfPlatformRequiresIt,
+  recreateWindowIfNone
+} from './windowPolicy'
 
 setupGlobalErrorLogging()
 
@@ -23,11 +28,15 @@ function createMainWindow(): BrowserWindow {
     }
   })
 
-  if (process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-  } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
-  }
+  loadRendererContent({
+    rendererUrl: process.env['ELECTRON_RENDERER_URL'],
+    loadUrl: (url) => {
+      mainWindow.loadURL(url)
+    },
+    loadFile: () => {
+      mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    }
+  })
   return mainWindow
 }
 
@@ -42,14 +51,12 @@ app.whenReady().then(() => {
   createMainWindow()
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow()
-    }
+    recreateWindowIfNone(BrowserWindow.getAllWindows().length, createMainWindow)
   })
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  quitIfPlatformRequiresIt(process.platform, () => {
     app.quit()
-  }
+  })
 })
